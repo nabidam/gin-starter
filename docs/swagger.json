@@ -4,9 +4,30 @@
         "contact": {}
     },
     "paths": {
-        "/example/helloworld": {
+        "/users": {
             "get": {
-                "description": "do ping",
+                "description": "Get all users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_nabidam_gin-starter_internal_data_response.UserResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -14,16 +35,60 @@
                     "application/json"
                 ],
                 "tags": [
-                    "example"
+                    "users"
                 ],
-                "summary": "ping example",
+                "summary": "Create new user",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_nabidam_gin-starter_internal_data_request.UserCreate"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/github_com_nabidam_gin-starter_internal_data_response.UserResponse"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_nabidam_gin-starter_internal_data_request.UserCreate": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_nabidam_gin-starter_internal_data_response.UserResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }

@@ -1,19 +1,61 @@
+definitions:
+  github_com_nabidam_gin-starter_internal_data_request.UserCreate:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  github_com_nabidam_gin-starter_internal_data_response.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
-  /example/helloworld:
+  /users:
     get:
-      consumes:
-      - application/json
-      description: do ping
+      description: Get all users
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
-      summary: ping example
+            items:
+              $ref: '#/definitions/github_com_nabidam_gin-starter_internal_data_response.UserResponse'
+            type: array
+      summary: Get all users
       tags:
-      - example
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create new user
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_nabidam_gin-starter_internal_data_request.UserCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_nabidam_gin-starter_internal_data_response.UserResponse'
+      summary: Create new user
+      tags:
+      - users
 swagger: "2.0"
