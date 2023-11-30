@@ -12,6 +12,7 @@ type Config struct {
 	DBHost     string
 	DBPort     string
 	DBDatabase string
+	SecretKey  string
 }
 
 func LoadConfig() (*Config, error) {
@@ -29,6 +30,7 @@ func LoadConfig() (*Config, error) {
 		DBHost:     viper.GetString("DB_HOST"),
 		DBPort:     viper.GetString("DB_PORT"),
 		DBDatabase: viper.GetString("DB_DATABASE"),
+		SecretKey:  viper.GetString("SECRET_KEY"),
 	}
 
 	return config, nil

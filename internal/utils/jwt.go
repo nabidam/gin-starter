@@ -4,9 +4,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/nabidam/gin-starter/internal/config"
 )
-
-var signingKey = []byte("your-secret-key")
 
 type Claims struct {
 	UserID uint `json:"userId"`
@@ -14,6 +13,9 @@ type Claims struct {
 }
 
 func GenerateToken(userID uint) (string, error) {
+	configs, _ := config.LoadConfig()
+	signingKey := []byte(configs.SecretKey)
+
 	expirationTime := time.Now().Add(24 * time.Hour) // Token expires in 24 hours
 
 	claims := &Claims{
@@ -33,6 +35,9 @@ func GenerateToken(userID uint) (string, error) {
 }
 
 func ValidateToken(tokenString string) (*Claims, error) {
+	configs, _ := config.LoadConfig()
+	signingKey := []byte(configs.SecretKey)
+
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return signingKey, nil
 	})
