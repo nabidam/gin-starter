@@ -48,7 +48,7 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -56,10 +56,26 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	user.HashPassword(user.Password)
 	err := h.userRepository.Create(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	userOut := user.ToResponse()
+	c.JSON(http.StatusOK, userOut)
+}
+
+// @Summary Get logged in user
+// @Schemes
+// @Description Get logged in user
+// @Tags users
+// @Produce json
+// @Security Bearer
+// @Success 200 {object} response.UserResponse
+// @Router /users/me [get]
+func (h *UserHandler) GetMe(c *gin.Context) {
+	authUser, _ := c.Get("user")
+	user := authUser.(models.User)
+	userOut := user.ToResponse()
+
 	c.JSON(http.StatusOK, userOut)
 }

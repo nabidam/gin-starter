@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"log"
-
 	"github.com/nabidam/gin-starter/internal/data/request"
 	"github.com/nabidam/gin-starter/internal/models"
 	"github.com/nabidam/gin-starter/internal/utils"
@@ -30,8 +28,6 @@ func (r *authRepository) Login(user request.UserLogin) (*models.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("User found: %s", requestedUser.Username)
 
 	if requestedUser.VerifyPassword(user.Password) {
 		// generate token

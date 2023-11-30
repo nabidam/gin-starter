@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/nabidam/gin-starter/internal/data/request"
-	_ "github.com/nabidam/gin-starter/internal/data/request"
 	_ "github.com/nabidam/gin-starter/internal/data/response"
 	"github.com/nabidam/gin-starter/internal/repository"
+	"github.com/nabidam/gin-starter/internal/utils"
 )
 
 type AuthHandler struct {
@@ -32,16 +32,13 @@ func NewAuthHandler(authRepository repository.AuthRepository) *AuthHandler {
 func (h *AuthHandler) Login(c *gin.Context) {
 	var user request.UserLogin
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		utils.AbortWithError(c, err, http.StatusBadRequest)
 		return
 	}
 
 	token, err := h.authRepository.Login(user)
-	if token == nil {
-		c.AbortWithStatus(404)
-	}
-	if err != nil {
-		c.AbortWithError(401, err)
+	if token == nil || err != nil {
+		utils.AbortWithError(c, err, http.StatusForbidden)
 		return
 	}
 

@@ -5,6 +5,7 @@ import (
 	docs "github.com/nabidam/gin-starter/docs"
 	"github.com/nabidam/gin-starter/internal/config"
 	"github.com/nabidam/gin-starter/internal/handlers"
+	"github.com/nabidam/gin-starter/internal/middleware"
 	"github.com/nabidam/gin-starter/internal/repository"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -33,9 +34,8 @@ func SetupRouter() *gin.Engine {
 		usersRoute := api.Group("/users")
 		{
 			usersRoute.GET("/", userHandler.GetUsers)
-			// A get function which returns a hello world string by json
 			usersRoute.POST("/", userHandler.CreateUser)
-			// Add more routes as needed
+			usersRoute.GET("/me", middleware.AuthMiddleware(db), userHandler.GetMe)
 		}
 
 		// auth

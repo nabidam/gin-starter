@@ -19,6 +19,6 @@ func NewTokenRepository(db *gorm.DB) TokenRepository {
 	}
 }
 
-func (t *tokenRepository) CreateToken(token *models.Token) error {
-	return t.db.Create(token).Error
+func (r *tokenRepository) CreateToken(token *models.Token) error {
+	return r.db.Create(token).Error
 }

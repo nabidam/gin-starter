@@ -1,11 +1,19 @@
 package utils
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gin-gonic/gin"
+)
 
 func ErrorPanic(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func AbortWithError(c *gin.Context, err error, status int) {
+	c.AbortWithStatusJSON(status, gin.H{"error": err.Error()})
 }
 
 func UserNotFoundError() error {
