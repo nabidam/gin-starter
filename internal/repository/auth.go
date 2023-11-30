@@ -10,7 +10,7 @@ import (
 )
 
 type AuthRepository interface {
-	Login(user request.UserLogin) (*models.User, error)
+	Login(user request.UserLogin) (*models.Token, error)
 }
 
 type authRepository struct {
@@ -23,7 +23,7 @@ func NewAuthRepository(db *gorm.DB) AuthRepository {
 	}
 }
 
-func (r *authRepository) Login(user request.UserLogin) (*models.User, error) {
+func (r *authRepository) Login(user request.UserLogin) (*models.Token, error) {
 	userRepository := NewUserRepository(r.db)
 	requestedUser, err := userRepository.FindByEmail(user.Email)
 
@@ -34,7 +34,19 @@ func (r *authRepository) Login(user request.UserLogin) (*models.User, error) {
 	log.Printf("User found: %s", requestedUser.Username)
 
 	if requestedUser.VerifyPassword(user.Password) {
-		return &requestedUser, nil
+		// generate token
+		tokenString, _ := utils.GenerateToken(requestedUser.ID)
+		token := models.Token{
+			Token:  tokenString,
+			UserID: uint64(requestedUser.ID),
+		}
+
+		tokenRepository := NewTokenRepository(r.db)
+		err := tokenRepository.CreateToken(&token)
+		if err != nil {
+			return &token, err
+		}
+		return &token, nil
 	}
-	return &requestedUser, utils.InvalidCredentialsError()
+	return nil, utils.InvalidCredentialsError()
 }

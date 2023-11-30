@@ -36,8 +36,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	loggedInUser, err := h.authRepository.Login(user)
-	if loggedInUser == nil {
+	token, err := h.authRepository.Login(user)
+	if token == nil {
 		c.AbortWithStatus(404)
 	}
 	if err != nil {
@@ -45,6 +45,6 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	userOut := loggedInUser.ToResponse()
-	c.JSON(http.StatusOK, userOut)
+	tokenOut := token.ToResponse()
+	c.JSON(http.StatusOK, tokenOut)
 }
