@@ -24,6 +24,9 @@ func SetupRouter() *gin.Engine {
 	userRepository := repository.NewUserRepository(db)
 	userHandler := handlers.NewUserHandler(userRepository)
 
+	authRepository := repository.NewAuthRepository(db)
+	authHandler := handlers.NewAuthHandler(authRepository)
+
 	// Define routes
 	api := r.Group("/api/v1")
 	{
@@ -33,6 +36,12 @@ func SetupRouter() *gin.Engine {
 			// A get function which returns a hello world string by json
 			usersRoute.POST("/", userHandler.CreateUser)
 			// Add more routes as needed
+		}
+
+		// auth
+		authRoute := api.Group("/auth")
+		{
+			authRoute.POST("/login", authHandler.Login)
 		}
 
 	}
